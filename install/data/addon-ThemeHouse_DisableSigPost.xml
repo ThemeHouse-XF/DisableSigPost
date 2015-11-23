@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_DisableSigPost" title="[⌂] Disable Signature in Posts" version_string="1.0.0" version_id="1447261019" url="http://xf.themehouse.io" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Thread" description="XenForo_ControllerPublic_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_DiscussionMessage_Post" description="XenForo_DataWriter_DiscussionMessage_Post (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Post" description="XenForo_ControllerPublic_Post (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Forum" description="XenForo_ControllerPublic_Forum (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="ThemeHouse_DisableSigPost_Listener_LoadClass" callback_method="loadClassDataWriter" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="th_hide_signature_disablesigposts" version_id="1412283659" version_string="1.0.0"><![CDATA[Hide Signature]]></phrase>
+    <phrase title="th_hide_signature_explain_disablesigposts" version_id="1412283659" version_string="1.0.0"><![CDATA[If ticked your signature will be hidden from below this post.]]></phrase>
+    <phrase title="th_hide_signature_thread_create_explain_disablesigposts" version_id="1412283659" version_string="1.0.0"><![CDATA[If checked your signature will be hidden in the first post of this thread.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="th_disable_signature_disablesigposts" version_id="1412283659" version_string="1.0.0"><![CDATA[<dl class="ctrlUnit">
+<dt></dt>
+	<dd><ul>
+	<li>
+		<label for="ctrl_hide_signature_th"><input type="checkbox" name="hide_signature_th" id="ctrl_hide_signature_th" {xen:checked {$post.hide_signature_th}} /> {xen:phrase th_hide_signature_disablesigposts}</label>
+		<p class="hint">{xen:phrase th_hide_signature_explain_disablesigposts}</p>
+	</li>
+	</ul></dd>
+</dl>]]></template>
+    <template title="th_thread_create_disablesigposts" version_id="1412283659" version_string="1.0.0"><![CDATA[<dl class="ctrlUnit">
+<dt></dt>
+	<dd><ul>
+	<li>
+		<label for="ctrl_hide_signature_th"><input type="checkbox" name="hide_signature_th" id="ctrl_hide_signature_th" {xen:checked {$post.hide_signature_th}} /> {xen:phrase th_hide_signature_disablesigposts}</label>
+		<p class="hint">{xen:phrase th_hide_signature_thread_create_explain_disablesigposts}</p>
+	</li>
+	</ul></dd>
+</dl>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_disableSigPost" description="Copyright notice for [⌂] Disable Signature in Posts" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="footer" modification_key="th_copyrightNotice_disableSigPosts" description="Copyright notice for Disable Signature in Posts by ThemeHouse" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="message" modification_key="th_message_disablesigposts" description="Adds disable signature into the conditional to remove if required." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:if is="{\$visitor.content_show_signature} && {\$message.signature})#Us]]></find>
+      <replace><![CDATA[${0} && !{$message.hide_signature_th}]]></replace>
+    </modification>
+    <modification template="post_edit" modification_key="th_postEdit_disablesigposts" description="Adds option to hide signature." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<dd><ul>.*</ul></dd>)#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="th_disable_signature_disablesigposts" />]]></replace>
+    </modification>
+    <modification template="thread_create" modification_key="th_threadCreate_disablesigposts" description="Add option to dsiable signature in the first post of the thread." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:include template="thread_fields_status" />)#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="th_thread_create_disablesigposts" />]]></replace>
+    </modification>
+    <modification template="thread_reply" modification_key="th_threadReply_disablesigposts" description="Adds option to hide signature." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<dd><ul>.*</ul></dd>)#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="th_disable_signature_disablesigposts" />]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
